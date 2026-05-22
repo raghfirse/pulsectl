@@ -1,0 +1,18 @@
+# pulsectl example configuration
+# Copy to config.yaml and adjust as needed.
+
+endpoints:
+  - name: homepage
+    url: https://example.com
+    interval: 30s   # how often to poll (default: 30s)
+    timeout: 5s     # per-request timeout  (default: 5s)
+
+  - name: api-health
+    url: https://api.example.com/health
+    interval: 15s
+    timeout: 3s
+
+  - name: internal-service
+    url: http://localhost:9090/ping
+    interval: 10s
+    timeout: 2s
