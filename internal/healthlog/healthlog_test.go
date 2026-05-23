@@ -64,6 +64,24 @@ func TestLogger_TimestampFormat(t *testing.T) {
 	}
 }
 
+func TestLogger_MultipleResults(t *testing.T) {
+	var buf bytes.Buffer
+	l := healthlog.NewWithWriter(&buf)
+	l.Log(makeResult("https://example.com", true, 10, nil))
+	l.Log(makeResult("https://fail.io", false, 300, errors.New("timeout")))
+
+	lines := strings.Split(strings.TrimRight(buf.String(), "\n"), "\n")
+	if len(lines) != 2 {
+		t.Fatalf("expected 2 log lines, got %d", len(lines))
+	}
+	if !strings.Contains(lines[0], "UP") {
+		t.Errorf("expected first line to contain UP, got: %q", lines[0])
+	}
+	if !strings.Contains(lines[1], "DOWN") {
+		t.Errorf("expected second line to contain DOWN, got: %q", lines[1])
+	}
+}
+
 func TestNew_CreatesFile(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "health.log")
